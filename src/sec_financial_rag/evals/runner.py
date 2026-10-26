@@ -393,6 +393,29 @@ def main(
 
 if __name__ == "__main__":
     args = sys.argv
+    if "-h" in args or "--help" in args:
+        print("Usage: uv run python -m sec_financial_rag.evals.runner [OPTIONS]")
+        print("\nOptions:")
+        print("  --collection NAME   Qdrant collection to evaluate")
+        print("  --mode MODE         Search mode: dense, bm25, or hybrid")
+        print("  --exact             Use exact (brute-force) search")
+        print(
+            "  --parents           Expand matched child chunks to parents via Postgres doc store"
+        )
+        print(
+            "  --route             Use query router to filter by ticker and fiscal year"
+        )
+        print(
+            "  --hyde              Embed a hypothetical filing passage for dense retrieval"
+        )
+        print("  --rerank            Rerank candidates using cross-encoder")
+        print("  --retrieval-only    Skip answer generation (no LLM cost)")
+        print(
+            "  --top-n N           Number of passages sent to the generator (default: 5)"
+        )
+        print("  --tag TAG           Optional tag appended to the report filename")
+        print("  -h, --help          Show this message and exit")
+        sys.exit(0)
     main(
         generate="--retrieval-only" not in args,
         collection=args[args.index("--collection") + 1]

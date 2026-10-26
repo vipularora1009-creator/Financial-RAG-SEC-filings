@@ -57,4 +57,9 @@ def main(model_name: str, fp16: bool = False) -> None:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        print(
+            "Usage: uv run python scripts/benchmark_embeddings.py <model_name> [--fp16]"
+        )
+        sys.exit(0 if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help") else 1)
     main(sys.argv[1], fp16="--fp16" in sys.argv)

@@ -166,4 +166,7 @@ def main(dump_path: str) -> None:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        print("Usage: uv run python scripts/table_fidelity.py <unstructured_dump.json>")
+        sys.exit(0 if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help") else 1)
     main(sys.argv[1])

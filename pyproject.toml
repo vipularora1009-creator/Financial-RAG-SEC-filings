@@ -1,7 +1,7 @@
 [project]
 name = "sec-financial-rag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Production-grade financial RAG pipeline over SEC 10-K and 10-Q filings with citations and measured ablations"
 readme = "README.md"
 authors = [
     { name = "Vipul-arora-K", email = "87521321+Vipul-arora-K@users.noreply.github.com" }
