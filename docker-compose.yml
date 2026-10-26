@@ -1,0 +1,48 @@
+# Local infrastructure for the RAG pipeline (spec §3, §7 Week 1).
+# Start: docker compose up -d    Stop: docker compose down    (data survives in named volumes)
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.2          # pinned: reproducible experiments
+    container_name: sec-rag-qdrant
+    ports:
+      - "127.0.0.1:6333:6333"             # HTTP REST API + dashboard (localhost only)
+      - "127.0.0.1:6334:6334"             # gRPC API (faster for bulk upserts)
+    volumes:
+      - qdrant_storage:/qdrant/storage    # vectors + payloads persist here
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18.6
+    container_name: sec-rag-postgres-ledger
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_storage:/var/lib/postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD missing - copy .env.example to .env and set it}
+    healthcheck:                          # "started" != "ready"; Docker runs this to find out
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 5s                        # run the check every 5 seconds
+      timeout: 5s                         # a check taking longer than 5s counts as a failure
+      retries: 5                          # 5 failures in a row -> marked "unhealthy"
+
+  phoenix:
+    image: arizephoenix/phoenix:version-20.24.0   # pinned stable release (not nightly)
+    container_name: sec-rag-phoenix
+    ports:
+      - "127.0.0.1:6006:6006"             # web UI + OTLP/HTTP trace collector
+      - "127.0.0.1:4317:4317"             # OTLP/gRPC trace collector
+    environment:
+      PHOENIX_WORKING_DIR: /mnt/data      # Phoenix keeps its SQLite trace DB here
+    volumes:
+      - phoenix_data:/mnt/data
+    restart: unless-stopped
+
+volumes:
+  qdrant_storage:
+  postgres_storage:
+  phoenix_data:

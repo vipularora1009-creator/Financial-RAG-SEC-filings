@@ -1,0 +1,25 @@
+.env
+data/raw_filings/
+data/cache/
+.venv/
+assets
+learning-records/
+lessons/
+reference/
+DEVLOG.md
+__pycache__/
+*.pyc
+data/golden_eval/financebench/
+data/golden_eval/candidates/
+data/golden_eval/eval_dataset.jsonl
+# Per-question eval reports contain FinanceBench questions/answers (no license): keep local.
+evals/reports/*_eval.jsonl
+evals/reports/*_eval.partial.jsonl
+.DS_Store
+.ruff_cache/
+.pytest_cache/
+# Personal learning and working notes (kept local)
+CLAUDE.md
+MISSION.md
+NOTES.md
+RESOURCES.md
